@@ -138,33 +138,78 @@
         }
         .send-btn:hover:not(:disabled) { transform: scale(1.05); }
         .send-btn:disabled { background: #ccc; cursor: not-allowed; }
-        .end-message {
+
+        /* 粉色软萌问卷提示框样式 */
+        .survey-prompt-box {
+            display: none;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
             text-align: center;
-            color: #667eea;
-            font-weight: bold;
-            margin: 20px 0;
-            padding: 15px;
-            background: #f0f4ff;
-            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(255, 154, 158, 0.4);
+            animation: bounceIn 0.6s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* 问卷页面样式 */
-        #survey-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            z-index: 99999;
-            display: none;
-            overflow: auto;
+        .survey-prompt-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
         }
-        #survey-iframe {
-            width: 100%;
-            height: 800px;
-            border: 0;
-            frameborder: 0;
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .survey-prompt-text {
+            font-size: 18px;
+            color: #d63384;
+            font-weight: bold;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            line-height: 1.5;
+        }
+
+        .survey-prompt-btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #ff6b95 0%, #ff8e53 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 107, 149, 0.4);
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .survey-prompt-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255, 107, 149, 0.6);
+        }
+
+        .survey-prompt-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -185,18 +230,14 @@
                 <button class="send-btn" id="send-btn" onclick="sendMessage()">发送</button>
             </div>
         </div>
-        <div class="end-message" id="end-message">对话已结束，请填写下方问卷。</div>
-    </div>
 
-    <!-- 问卷页面 - 全屏显示 -->
-    <div id="survey-screen">
-        <iframe 
-            id="survey-iframe" 
-            src="https://www.credamo.com/s/AZ36juano/"
-            width="100%" 
-            height="800px"
-            frameborder="0">
-        </iframe>
+        <!-- 粉色软萌问卷提示框 - 初始隐藏 -->
+        <div class="survey-prompt-box" id="survey-prompt-box">
+            <div class="survey-prompt-text">🎀六轮对话完成！你的意见超级重要～快去问卷区告诉我吧🎀</div>
+            <a href="https://www.credamo.com/s/AZ36juano/" target="_blank" class="survey-prompt-btn">
+                ✨ 去填写问卷 ✨
+            </a>
+        </div>
     </div>
 
     <script>
@@ -227,6 +268,9 @@
             document.getElementById('welcome-screen').style.display = 'none';
             document.getElementById('chat-screen').style.display = 'block';
             document.getElementById('round-counter').textContent = `当前对话轮数：${currentRound}/${maxRounds}`;
+
+            // 隐藏问卷提示框（如果之前显示过）
+            document.getElementById('survey-prompt-box').style.display = 'none';
 
             const groupConfig = currentGroup === 'A' ? GROUP_A : GROUP_B;
             addMessage(groupConfig.greeting, 'bot');
@@ -287,16 +331,15 @@
                 currentRound++;
                 document.getElementById('round-counter').textContent = `当前对话轮数：${currentRound}/${maxRounds}`;
 
-                // 第六轮结束后显示问卷
+                // 第六轮结束后显示问卷提示框
                 if (currentRound >= maxRounds) {
                     document.getElementById('user-input').disabled = true;
                     sendBtn.disabled = true;
-                    document.getElementById('end-message').style.display = 'block';
-                    
-                    // 延迟1.5秒后隐藏聊天界面，显示问卷
+
+                    // 延迟1秒后显示粉色提示框
                     setTimeout(() => {
-                        showSurvey();
-                    }, 1500);
+                        showSurveyPrompt();
+                    }, 1000);
                 }
             } catch (error) {
                 addMessage(`错误: ${error.message}`, 'bot');
@@ -310,18 +353,17 @@
             if (event.key === 'Enter') sendMessage();
         }
 
-        // 显示问卷函数
-        function showSurvey() {
-            console.log('显示见数问卷...');
+        // 显示问卷提示框函数
+        function showSurveyPrompt() {
+            console.log('显示问卷提示框...');
             
-            // 隐藏聊天界面
-            document.getElementById('chat-screen').style.display = 'none';
-            
-            // 显示问卷界面
-            const surveyScreen = document.getElementById('survey-screen');
-            surveyScreen.style.display = 'block';
-            
-            console.log('问卷已显示！');
+            const promptBox = document.getElementById('survey-prompt-box');
+            promptBox.style.display = 'block';
+
+            // 滚动到底部让用户看到提示框
+            promptBox.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+            console.log('问卷提示框已显示！');
         }
     </script>
 </body>
