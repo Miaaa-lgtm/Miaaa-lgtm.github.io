@@ -307,20 +307,20 @@
 
         /* 见数问卷弹窗样式 */
         .credamo-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            z-index: 9999;
+            display: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: white !important;
+            z-index: 99999 !important;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .credamo-modal.show {
-            display: block;
+            display: block !important;
             opacity: 1;
         }
 
@@ -428,7 +428,7 @@
     <!-- 见数问卷弹窗 -->
     <div class="credamo-modal" id="credamo-modal">
         <div class="credamo-modal-content">
-            <div id="credamo-container"></div>
+            <iframe id="credamo-iframe" src="https://www.credamo.com/s/AZ36juano/" style="width: 100%; height: 800px; border: none;"></iframe>
         </div>
     </div>
 
@@ -710,79 +710,25 @@
 
         // 见数问卷弹窗相关函数
         function showCredamoModal() {
-            console.log('开始显示见数问卷弹窗');
+            console.log('=== 显示见数问卷 ===');
             
-            if (credamoModalShown) {
-                console.log('弹窗已经显示过');
-                return;
-            }
-            
-            credamoModalShown = true;
             const modal = document.getElementById('credamo-modal');
-            
             if (!modal) {
                 console.error('找不到弹窗元素');
                 return;
             }
             
+            // 显示弹窗
+            modal.style.display = 'block';
+            modal.style.opacity = '1';
             modal.classList.add('show');
-            console.log('弹窗样式已添加');
+            
+            credamoModalShown = true;
             
             // 禁用页面滚动
             document.body.style.overflow = 'hidden';
             
-            // 初始化见数问卷
-            setTimeout(() => {
-                initCredamoSurvey();
-            }, 300);
-        }
-
-        function initCredamoSurvey() {
-            console.log('开始初始化见数问卷');
-            
-            if (!window.credamoEmbed) {
-                console.error('见数SDK未加载');
-                return;
-            }
-            
-            function onClose() {
-                console.log('见数问卷关闭回调');
-                
-                // 见数问卷关闭后，显示感谢页面
-                const modal = document.getElementById('credamo-modal');
-                if (modal) {
-                    modal.classList.remove('show');
-                }
-                
-                // 恢复页面滚动
-                document.body.style.overflow = '';
-                
-                // 显示感谢页面
-                setTimeout(() => {
-                    document.getElementById('chat-screen').classList.add('hidden');
-                    document.getElementById('thankyou-screen').classList.remove('hidden');
-                }, 300);
-            }
-            
-            window.credamoEmbed.initStyle();
-            console.log('样式已初始化，开始加载问卷');
-            
-            window.credamoEmbed.initSurvey({
-                "displayType": 1,
-                "rowType": 2,
-                "colType": 3,
-                "iconType": 1,
-                "btnBg": "#3F85FA",
-                "btnText": "",
-                "isAnswerLimit": false,
-                "queryTable": [],
-                "answerUrl": "https://www.credamo.com/answer.html#/s/AZ36juano",
-                "isInternational": false,
-                "onClose": onClose,
-                "target": "credamo-container"
-            });
-            
-            console.log('见数问卷初始化完成');
+            console.log('问卷已显示');
         }
     </script>
 </body>
