@@ -465,7 +465,7 @@
             currentRound = 0;
             conversationHistory = [];
             isBotResponding = false;
-            questionnaireAnswers = {};
+            credamoModalShown = false;
 
             document.getElementById('welcome-screen').classList.add('hidden');
             document.getElementById('chat-screen').classList.remove('hidden');
@@ -710,26 +710,49 @@
 
         // 见数问卷弹窗相关函数
         function showCredamoModal() {
-            if (credamoModalShown) return;
+            console.log('开始显示见数问卷弹窗');
+            
+            if (credamoModalShown) {
+                console.log('弹窗已经显示过');
+                return;
+            }
             
             credamoModalShown = true;
             const modal = document.getElementById('credamo-modal');
+            
+            if (!modal) {
+                console.error('找不到弹窗元素');
+                return;
+            }
+            
             modal.classList.add('show');
+            console.log('弹窗样式已添加');
             
             // 禁用页面滚动
             document.body.style.overflow = 'hidden';
             
             // 初始化见数问卷
-            initCredamoSurvey();
+            setTimeout(() => {
+                initCredamoSurvey();
+            }, 300);
         }
 
         function initCredamoSurvey() {
+            console.log('开始初始化见数问卷');
+            
+            if (!window.credamoEmbed) {
+                console.error('见数SDK未加载');
+                return;
+            }
+            
             function onClose() {
-                console.log('close callback');
+                console.log('见数问卷关闭回调');
                 
                 // 见数问卷关闭后，显示感谢页面
                 const modal = document.getElementById('credamo-modal');
-                modal.classList.remove('show');
+                if (modal) {
+                    modal.classList.remove('show');
+                }
                 
                 // 恢复页面滚动
                 document.body.style.overflow = '';
@@ -742,6 +765,8 @@
             }
             
             window.credamoEmbed.initStyle();
+            console.log('样式已初始化，开始加载问卷');
+            
             window.credamoEmbed.initSurvey({
                 "displayType": 1,
                 "rowType": 2,
@@ -756,6 +781,8 @@
                 "onClose": onClose,
                 "target": "credamo-container"
             });
+            
+            console.log('见数问卷初始化完成');
         }
     </script>
 </body>
