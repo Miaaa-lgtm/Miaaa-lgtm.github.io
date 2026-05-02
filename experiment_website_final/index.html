@@ -5,51 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>聊天机器人拟人化特征实验</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
-
         .container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-        }
-
-        .welcome-screen, .chat-screen, .thankyou-screen {
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-
         h1 {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
             font-size: 24px;
         }
-
-        h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-
         p {
             color: #666;
             line-height: 1.6;
             margin-bottom: 20px;
             text-align: center;
         }
-
         .btn {
             display: block;
             width: 100%;
@@ -62,24 +44,26 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
-
         .btn:disabled {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
         }
-
+        .round-counter {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
         .chat-container {
             display: flex;
             flex-direction: column;
             height: 500px;
         }
-
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -87,65 +71,31 @@
             border-bottom: 1px solid #eee;
             margin-bottom: 15px;
         }
-
         .message {
             display: flex;
             margin-bottom: 20px;
             max-width: 100%;
             align-items: center;
         }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message.bot {
-            justify-content: flex-start;
-        }
-
+        .message.user { justify-content: flex-end; }
+        .message.bot { justify-content: flex-start; }
         .message-content {
             padding: 10px 15px;
             border-radius: 10px;
             line-height: 1.5;
             max-width: 70%;
             word-wrap: break-word;
-            position: relative;
         }
-
         .message.user .message-content {
             background: #95ec69;
             color: #333;
             margin-right: 10px;
         }
-
-        .message.user .message-content::before {
-            content: "";
-            width: 0;
-            height: 0;
-            position: absolute;
-            border: 5px solid transparent;
-            border-left-color: #95ec69;
-            right: -10px;
-            top: 15px;
-        }
-
         .message.bot .message-content {
             background: #f1f1f1;
             color: #333;
             margin-left: 10px;
         }
-
-        .message.bot .message-content::before {
-            content: "";
-            width: 0;
-            height: 0;
-            position: absolute;
-            border: 5px solid transparent;
-            border-right-color: #f1f1f1;
-            left: -10px;
-            top: 15px;
-        }
-
         .avatar {
             width: 45px;
             height: 45px;
@@ -153,19 +103,8 @@
             flex-shrink: 0;
             object-fit: cover;
         }
-
-        .message.user .avatar {
-            order: 1;
-        }
-
-        .message.bot .avatar {
-            order: 0;
-        }
-
-        .avatar-bot-A {
-            background: #fff;
-        }
-
+        .message.user .avatar { order: 1; }
+        .message.bot .avatar { order: 0; }
         .avatar-bot-B {
             background: #888;
             display: flex;
@@ -174,16 +113,10 @@
             font-size: 22px;
             color: white;
         }
-
-        .avatar-user {
-            background: #888;
-        }
-
         .input-container {
             display: flex;
             gap: 10px;
         }
-
         #user-input {
             flex: 1;
             padding: 12px 18px;
@@ -191,18 +124,9 @@
             border-radius: 30px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.2s;
         }
-
-        #user-input:focus {
-            border-color: #667eea;
-        }
-
-        #user-input:disabled {
-            background: #f8f8f8;
-            color: #999;
-        }
-
+        #user-input:focus { border-color: #667eea; }
+        #user-input:disabled { background: #f8f8f8; color: #999; }
         .send-btn {
             padding: 12px 24px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -211,25 +135,9 @@
             border-radius: 30px;
             cursor: pointer;
             font-size: 16px;
-            transition: transform 0.2s;
         }
-
-        .send-btn:hover:not(:disabled) {
-            transform: scale(1.05);
-        }
-
-        .send-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .round-counter {
-            text-align: center;
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
+        .send-btn:hover:not(:disabled) { transform: scale(1.05); }
+        .send-btn:disabled { background: #ccc; cursor: not-allowed; }
         .end-message {
             text-align: center;
             color: #667eea;
@@ -240,73 +148,8 @@
             border-radius: 10px;
         }
 
-        .thankyou-screen {
-            text-align: center;
-            min-height: 300px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .thankyou-title {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .thankyou-subtitle {
-            font-size: 16px;
-            color: #666;
-        }
-
-        .password-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .password-modal.show {
-            display: flex;
-        }
-
-        .password-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .password-content input {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .password-content input:focus {
-            border-color: #667eea;
-        }
-
-        .export-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            text-align: center;
-        }
-
-        .credamo-modal {
-            display: none;
+        /* 问卷页面样式 */
+        #survey-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -314,165 +157,79 @@
             height: 100%;
             background: white;
             z-index: 99999;
-            overflow: auto;
-        }
-
-        .credamo-modal.show {
-            display: block;
-        }
-
-        .credamo-modal-content {
-            width: 100%;
-            height: 600px;
-            max-width: 100%;
-            margin: 0 auto;
-            overflow: auto;
-        }
-
-        #credamo-container {
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-        }
-
-        .export-btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .export-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            padding: 12px 18px;
-            background: #f1f1f1;
-            border-radius: 20px;
-            border-bottom-left-radius: 5px;
-            max-width: 85%;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #667eea;
-            border-radius: 50%;
-            margin: 0 3px;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-
-        .hidden {
             display: none;
+            overflow: auto;
+        }
+        #survey-iframe {
+            width: 100%;
+            height: 800px;
+            border: 0;
+            frameborder: 0;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="welcome-screen" id="welcome-screen">
-            <h1>欢迎您参加人机对话体验实验</h1>
-            <p>本次实验将进行 6 轮简短对话，请您根据实际感受与聊天机器人进行交流。</p>
-            <button class="btn" onclick="startExperiment()">开始实验</button>
-        </div>
+    <!-- 聊天界面 -->
+    <div class="container" id="welcome-screen">
+        <h1>欢迎您参加人机对话体验实验</h1>
+        <p>本次实验将进行 6 轮简短对话，请您根据实际感受与聊天机器人进行交流。</p>
+        <button class="btn" onclick="startExperiment()">开始实验</button>
+    </div>
 
-        <div class="chat-screen hidden" id="chat-screen">
-            <div class="round-counter" id="round-counter">当前对话轮数：0/6</div>
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages"></div>
-                <div class="input-container">
-                    <input type="text" id="user-input" placeholder="输入消息..." onkeydown="handleKeyPress(event)">
-                    <button class="send-btn" id="send-btn" onclick="sendMessage()">发送</button>
-                </div>
+    <div class="container" id="chat-screen" style="display:none;">
+        <div class="round-counter" id="round-counter">当前对话轮数：0/6</div>
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="输入消息..." onkeydown="handleKeyPress(event)">
+                <button class="send-btn" id="send-btn" onclick="sendMessage()">发送</button>
             </div>
-            <div class="end-message hidden" id="end-message">对话已结束，请填写下方问卷。</div>
         </div>
-
-        <div class="thankyou-screen hidden" id="thankyou-screen">
-            <div class="thankyou-title">感谢您的参与！您的问卷已成功提交。</div>
-            <div class="thankyou-subtitle">祝您生活愉快，再见。</div>
-        </div>
+        <div class="end-message" id="end-message">对话已结束，请填写下方问卷。</div>
     </div>
 
-    <div class="password-modal" id="password-modal">
-        <div class="password-content">
-            <h2>请输入管理员密码</h2>
-            <input type="password" id="password-input" placeholder="输入密码">
-            <button class="btn" onclick="checkPassword()">确认</button>
-        </div>
-    </div>
-
-    <!-- 见数问卷SDK -->
-    <script src="https://app.credamo.com/credamo/js/credamo_embed.min.js"></script>
-
-    <!-- 见数问卷弹窗 -->
-    <div class="credamo-modal" id="credamo-modal">
-        <div class="credamo-modal-content">
-            <div id="credamo-container"></div>
-        </div>
+    <!-- 问卷页面 - 全屏显示 -->
+    <div id="survey-screen">
+        <iframe 
+            id="survey-iframe" 
+            src="https://www.credamo.com/s/AZ36juano/"
+            width="100%" 
+            height="800px"
+            frameborder="0">
+        </iframe>
     </div>
 
     <script>
         const GROUP_A = {
             name: '小皓同学',
-            avatarUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=anime%20boy%20portrait%20cute%20brown%20hair%20big%20brown%20eyes%20friendly%20smile%20white%20hoodie%20soft%20lighting%20clean%20background%20kawaii%20style&image_size=square',
+            avatarUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=anime%20boy%20portrait%20cute%20brown%20hair&image_size=square',
             systemPrompt: '你是小皓同学，一个温暖、可爱、充满活力的动漫男生形象客服。你在和一位朋友聊天。你的语气俏皮、口语化、充满共情。对于用户提出的任何问题，你都要认真倾听并以热情、完整的回答回应。如果你不确定答案，就用友好的语气给出建议。请自然使用语气词（呀、呢、啦、哦、嘛）和表情符号（😊✨🐶🎉💪）。回复简洁精炼。',
             greeting: '嗨嗨～我是小皓同学，你的专属小帮手✨ 有什么可以帮你的呀？'
         };
-
         const GROUP_B = {
             name: 'CS-001',
             avatarUrl: null,
             systemPrompt: '你是CS-001，一个高效的信息处理终端。你的职责是准确、简洁、直接地回答用户提出的任何问题。你拥有广泛的知识，对于用户的问题，你必须尽最大努力给出确切、有用的回答。你的语气正式、中立。严禁说你不知道答案，严禁说你无法回答，严禁说抱歉。严禁使用任何语气词（呀、呢、啦、哦、嘛）和表情符号。严禁寒暄。回复简洁精炼，控制在50字以内。',
             greeting: 'CS-001已就绪。请输入查询内容。'
         };
-
-        const USER_AVATAR_URL = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%20minimalist%20silhouette%20baby%20profile%20purple%20background%20soft%20pastel%20colors%20simple%20icon%20style&image_size=square';
+        const USER_AVATAR_URL = 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=user%20avatar%20minimalist&image_size=square';
 
         let currentGroup = null;
         let currentRound = 0;
         const maxRounds = 6;
-        let conversationHistory = [];
         let isBotResponding = false;
-        let credamoModalShown = false;
-
-        function getRandomGroup() {
-            return Math.random() < 0.5 ? 'A' : 'B';
-        }
 
         function startExperiment() {
-            currentGroup = getRandomGroup();
+            currentGroup = Math.random() < 0.5 ? 'A' : 'B';
             currentRound = 0;
-            conversationHistory = [];
             isBotResponding = false;
-            credamoModalShown = false;
 
-            document.getElementById('welcome-screen').classList.add('hidden');
-            document.getElementById('chat-screen').classList.remove('hidden');
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'block';
             document.getElementById('round-counter').textContent = `当前对话轮数：${currentRound}/${maxRounds}`;
 
             const groupConfig = currentGroup === 'A' ? GROUP_A : GROUP_B;
-            addBotMessage(groupConfig.greeting);
+            addMessage(groupConfig.greeting, 'bot');
         }
 
         function addMessage(content, sender) {
@@ -480,84 +237,19 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
 
-            let avatarUrl = '';
-            let avatarClass = '';
-            
             if (sender === 'user') {
-                avatarUrl = USER_AVATAR_URL;
-                avatarClass = 'avatar avatar-user';
+                messageDiv.innerHTML = `<img src="${USER_AVATAR_URL}" class="avatar"><div class="message-content">${content}</div>`;
             } else {
                 const groupConfig = currentGroup === 'A' ? GROUP_A : GROUP_B;
                 if (groupConfig.avatarUrl) {
-                    avatarUrl = groupConfig.avatarUrl;
-                    avatarClass = 'avatar avatar-bot-A';
+                    messageDiv.innerHTML = `<img src="${groupConfig.avatarUrl}" class="avatar"><div class="message-content">${content}</div>`;
                 } else {
-                    avatarClass = 'avatar avatar-bot-B';
+                    messageDiv.innerHTML = `<div class="avatar avatar-bot-B">⚙</div><div class="message-content">${content}</div>`;
                 }
-            }
-
-            if (avatarUrl) {
-                messageDiv.innerHTML = `
-                    <img src="${avatarUrl}" class="${avatarClass}" alt="${sender === 'user' ? '用户' : (currentGroup === 'A' ? GROUP_A.name : GROUP_B.name)}" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                    <div class="${avatarClass} hidden" style="display:none;">${currentGroup === 'B' ? '⚙' : ''}</div>
-                    <div class="message-content">${content}</div>
-                `;
-            } else {
-                messageDiv.innerHTML = `
-                    <div class="${avatarClass}">⚙</div>
-                    <div class="message-content">${content}</div>
-                `;
             }
 
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function addBotMessage(content) {
-            addMessage(content, 'bot');
-        }
-
-        function addUserMessage(content) {
-            addMessage(content, 'user');
-        }
-
-        function addTypingIndicator() {
-            const chatMessages = document.getElementById('chat-messages');
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot';
-            typingDiv.id = 'typing-indicator';
-            
-            const groupConfig = currentGroup === 'A' ? GROUP_A : GROUP_B;
-            
-            if (groupConfig.avatarUrl) {
-                typingDiv.innerHTML = `
-                    <img src="${groupConfig.avatarUrl}" class="avatar avatar-bot-A" alt="${groupConfig.name}">
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                `;
-            } else {
-                typingDiv.innerHTML = `
-                    <div class="avatar avatar-bot-B">⚙</div>
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                `;
-            }
-
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typingIndicator = document.getElementById('typing-indicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
         }
 
         async function sendMessage() {
@@ -571,15 +263,7 @@
             isBotResponding = true;
             sendBtn.disabled = true;
 
-            addUserMessage(content);
-
-            conversationHistory.push({
-                round: currentRound + 1,
-                userMessage: content,
-                botMessage: ''
-            });
-
-            addTypingIndicator();
+            addMessage(content, 'user');
 
             try {
                 const groupConfig = currentGroup === 'A' ? GROUP_A : GROUP_B;
@@ -593,41 +277,29 @@
                         ]
                     })
                 });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API请求失败: ${response.status} - ${errorText}`);
-                }
-                
+
+                if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
+
                 const data = await response.json();
-                if (!data.choices || !data.choices[0]) {
-                    alert('API返回错误: ' + JSON.stringify(data));
-                    return '系统出错，请稍后再试。';
-                }
-                const botReply = data.choices[0].message.content;
-                removeTypingIndicator();
-                addBotMessage(botReply);
-                conversationHistory[conversationHistory.length - 1].botMessage = botReply;
+                if (!data.choices || !data.choices[0]) throw new Error('API返回错误');
+
+                addMessage(data.choices[0].message.content, 'bot');
                 currentRound++;
                 document.getElementById('round-counter').textContent = `当前对话轮数：${currentRound}/${maxRounds}`;
 
+                // 第六轮结束后显示问卷
                 if (currentRound >= maxRounds) {
                     document.getElementById('user-input').disabled = true;
                     sendBtn.disabled = true;
-                    document.getElementById('end-message').classList.remove('hidden');
+                    document.getElementById('end-message').style.display = 'block';
                     
+                    // 延迟1.5秒后隐藏聊天界面，显示问卷
                     setTimeout(() => {
-                        showCredamoModal();
-                    }, 1000);
+                        showSurvey();
+                    }, 1500);
                 }
             } catch (error) {
-                console.error('API调用错误:', error);
-                removeTypingIndicator();
-                const errorMsg = `API调用失败: ${error.message}\n\n提示: 可能是跨域问题，请检查是否需要代理服务。`;
-                addBotMessage(errorMsg);
-                conversationHistory[conversationHistory.length - 1].botMessage = errorMsg;
-                currentRound++;
-                document.getElementById('round-counter').textContent = `当前对话轮数：${currentRound}/${maxRounds}`;
+                addMessage(`错误: ${error.message}`, 'bot');
             } finally {
                 isBotResponding = false;
                 sendBtn.disabled = false;
@@ -635,116 +307,21 @@
         }
 
         function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
+            if (event.key === 'Enter') sendMessage();
         }
 
-        function saveToLocalStorage(data) {
-            const existingData = localStorage.getItem('experiment_data');
-            let allData = existingData ? JSON.parse(existingData) : [];
-            allData.push(data);
-            localStorage.setItem('experiment_data', JSON.stringify(allData));
-        }
-
-        function getLocalStorageData() {
-            const existingData = localStorage.getItem('experiment_data');
-            return existingData ? JSON.parse(existingData) : [];
-        }
-
-        function showPasswordModal() {
-            document.getElementById('password-modal').classList.add('show');
-        }
-
-        function checkPassword() {
-            const password = document.getElementById('password-input').value;
-            if (password === 'admin123') {
-                document.getElementById('password-modal').classList.remove('show');
-                exportData();
-            } else {
-                alert('密码错误');
-            }
-        }
-
-        async function exportData() {
-            try {
-                const allData = getLocalStorageData();
-                
-                if (allData.length === 0) {
-                    alert('没有可导出的数据');
-                    return;
-                }
-
-                const headers = ['group', 'timestamp', 'conversation', 'MC1', 'MC2', 'MC3', 'SP1', 'SP2', 'SP3', 'SP4', 'PW1', 'PW2', 'PW3', 'PC1', 'PC2', 'PC3', 'US1', 'US2', 'US3', 'US4', 'US5', 'gender', 'age', 'experience'];
-                
-                let csv = headers.join(',') + '\n';
-                
-                allData.forEach(row => {
-                    const values = headers.map(h => {
-                        let val = row[h];
-                        if (h === 'conversation') {
-                            val = `"${(val || '').replace(/"/g, '""')}"`;
-                        } else if (val === undefined || val === null) {
-                            val = '';
-                        }
-                        return val;
-                    });
-                    csv += values.join(',') + '\n';
-                });
-
-                const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `experiment_data_${new Date().toISOString().split('T')[0]}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            } catch (error) {
-                alert('导出失败: ' + error.message);
-            }
-        }
-
-        function showCredamoModal() {
-            const modal = document.getElementById('credamo-modal');
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-            credamoModalShown = true;
+        // 显示问卷函数
+        function showSurvey() {
+            console.log('显示见数问卷...');
             
-            initCredamoSurvey();
-        }
-
-        function onClose() {
-            console.log('close callback');
-            const modal = document.getElementById('credamo-modal');
-            modal.classList.remove('show');
-            document.body.style.overflow = '';
-            document.getElementById('thankyou-screen').classList.remove('hidden');
-        }
-
-        function initCredamoSurvey() {
-            if (typeof window.credamoEmbed === 'undefined') {
-                console.log('SDK未加载，延迟重试...');
-                setTimeout(initCredamoSurvey, 500);
-                return;
-            }
+            // 隐藏聊天界面
+            document.getElementById('chat-screen').style.display = 'none';
             
-            window.credamoEmbed.initStyle();
-            window.credamoEmbed.initSurvey({
-                "displayType": 1,
-                "rowType": 2,
-                "colType": 3,
-                "iconType": 1,
-                "btnBg": "#3F85FA",
-                "btnText": "",
-                "isAnswerLimit": false,
-                "queryTable": [],
-                "answerUrl": "https://www.credamo.com/answer.html#/s/AZ36juano",
-                "isInternational": false,
-                "onClose": onClose,
-                "target": "credamo-container"
-            });
+            // 显示问卷界面
+            const surveyScreen = document.getElementById('survey-screen');
+            surveyScreen.style.display = 'block';
+            
+            console.log('问卷已显示！');
         }
     </script>
 </body>
