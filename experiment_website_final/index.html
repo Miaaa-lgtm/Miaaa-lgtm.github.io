@@ -304,10 +304,7 @@
             border-top: 1px solid #eee;
             text-align: center;
         }
-<iframe id="credamo-iframe" 
-    src="https://www.credamo.com/s/AZ36juano/" 
-    style="width: 100%; height: 100%; border: none;">
-</iframe>
+
         .credamo-modal {
             display: none;
             position: fixed;
@@ -317,6 +314,7 @@
             height: 100%;
             background: white;
             z-index: 99999;
+            overflow: auto;
         }
 
         .credamo-modal.show {
@@ -325,13 +323,16 @@
 
         .credamo-modal-content {
             width: 100%;
-            height: 100%;
+            height: 600px;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: auto;
         }
 
-        #credamo-iframe {
+        #credamo-container {
             width: 100%;
             height: 100%;
-            border: none;
+            overflow: auto;
         }
 
         .export-btn {
@@ -421,9 +422,14 @@
         </div>
     </div>
 
+    <!-- 见数问卷SDK -->
+    <script src="https://app.credamo.com/credamo/js/credamo_embed.min.js"></script>
+
     <!-- 见数问卷弹窗 -->
     <div class="credamo-modal" id="credamo-modal">
-        <iframe id="credamo-iframe" src="https://www.credamo.com/s/AZ36juano/" style="width: 100%; height: 100%; border: none;"></iframe>
+        <div class="credamo-modal-content">
+            <div id="credamo-container"></div>
+        </div>
     </div>
 
     <script>
@@ -610,7 +616,6 @@
                     sendBtn.disabled = true;
                     document.getElementById('end-message').classList.remove('hidden');
                     
-                    alert('对话已完成！即将显示问卷...');
                     setTimeout(() => {
                         showCredamoModal();
                     }, 1000);
@@ -702,20 +707,44 @@
         }
 
         function showCredamoModal() {
-            console.log('=== 显示见数问卷 ===');
-            
             const modal = document.getElementById('credamo-modal');
-            if (!modal) {
-                alert('找不到弹窗元素');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            credamoModalShown = true;
+            
+            initCredamoSurvey();
+        }
+
+        function onClose() {
+            console.log('close callback');
+            const modal = document.getElementById('credamo-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+            document.getElementById('thankyou-screen').classList.remove('hidden');
+        }
+
+        function initCredamoSurvey() {
+            if (typeof window.credamoEmbed === 'undefined') {
+                console.log('SDK未加载，延迟重试...');
+                setTimeout(initCredamoSurvey, 500);
                 return;
             }
             
-            modal.style.display = 'block';
-            modal.classList.add('show');
-            credamoModalShown = true;
-            document.body.style.overflow = 'hidden';
-            
-            alert('问卷弹窗已显示！');
+            window.credamoEmbed.initStyle();
+            window.credamoEmbed.initSurvey({
+                "displayType": 1,
+                "rowType": 2,
+                "colType": 3,
+                "iconType": 1,
+                "btnBg": "#3F85FA",
+                "btnText": "",
+                "isAnswerLimit": false,
+                "queryTable": [],
+                "answerUrl": "https://www.credamo.com/answer.html#/s/AZ36juano",
+                "isInternational": false,
+                "onClose": onClose,
+                "target": "credamo-container"
+            });
         }
     </script>
 </body>
